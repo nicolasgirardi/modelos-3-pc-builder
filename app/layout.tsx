@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RigPicker - Recomendador de PC con TOPSIS",
+  title: "PC Builder Assistant - Recomendador de PC con TOPSIS",
   description: "Encuentra la mejor configuración de PC según tus necesidades.",
 };
 

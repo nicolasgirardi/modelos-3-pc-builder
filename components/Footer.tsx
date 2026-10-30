@@ -3,7 +3,7 @@ export default function Footer() {
 
     return (
         <footer className="border-t border-slate-800 py-8 text-center text-xs text-slate-500">
-            <p>© {CURRENT_YEAR} RigPicker - Creado con Next.js</p>
+            <p>© {CURRENT_YEAR} PC Builder Assistant - Creado con Next.js</p>
         </footer>
     );
 }

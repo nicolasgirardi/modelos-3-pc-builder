@@ -52,7 +52,7 @@ function cpu_general_performance(q1: string[], qa1: string | null): number {
             w1 = Math.max(w1, 8);
         }
         if (answer === "D") {
-            w1 = Math.max(w1, 4);
+            w1 = Math.max(w1, 6);
         }
     }
     weight = weight + w1
@@ -74,7 +74,7 @@ function cpu_gaming_performance(q1: string[], qb1: string[]): number {
     let w1 = 0
     for (const answer of q1) {
         if (answer === "B") {
-            w1 = Math.max(w1, 4);
+            w1 = Math.max(w1, 8);
         }
         if (answer === "C") {
             w1 = Math.max(w1, 6);
@@ -86,7 +86,7 @@ function cpu_gaming_performance(q1: string[], qb1: string[]): number {
             w2 = Math.max(w2, 6);
         }
         if (answer === "B") {
-            w2 = Math.max(w2, 6);
+            w2 = Math.max(w2, 8);
         }
         if (answer === "C") {
             w2 = Math.max(w2, 2);
@@ -156,7 +156,7 @@ function gpu_productivity_performance(q1: string[], qa1: string | null): number 
     let w1 = 0
     for (const answer of q1) {
         if (answer === "A") {
-            w1 = Math.max(w1, 8);
+            w1 = Math.max(w1, 4);
         }
         if (answer === "B") {
             w1 = Math.max(w1, 1);
@@ -347,10 +347,10 @@ function price(q12: string | null) {
             return 8
         }
         if (q12 === "C") {
-            return 15
+            return 20
         }
         if (q12 === "D") {
-            return 25
+            return 40
         }
     }
     return 1

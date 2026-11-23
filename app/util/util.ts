@@ -34,7 +34,8 @@ export function answersToWeights(data: URLSearchParams): Categories {
         storage_capacity: storage_capacity(answers.q5, answers.q3),
         storage_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2))/2),
         price: price(answers.q12),
-        budget: answers.q11
+        budget: answers.q11,
+        dgpu: dgpu(answers.q1)
     }
 }
 
@@ -112,7 +113,7 @@ function gpu_gaming_performance(q1: string[], qb1: string[], qb2: string | null)
             weight = Math.max(weight, 15);
         }
         if (answer === "B") {
-            weight = Math.max(weight, 10);
+            weight = Math.max(weight, 12);
         }
         if (answer === "C") {
             weight = Math.max(weight, 4);
@@ -149,10 +150,13 @@ function gpu_productivity_performance(q1: string[], qa1: string | null): number 
     }
     for (const answer of q1) {
         if (answer === "C" || answer === "E") {
-            weight = Math.max(weight, 20);
+            weight = Math.max(weight, 16);
         }
         if (answer === "D") {
             weight = Math.max(weight, 6);
+        }
+        if (answer === "F") {
+            weight = Math.max(weight, 20);
         }
     }
     return weight
@@ -306,6 +310,9 @@ function ram_capacity(q1: string[], qa1: string | null, qb1: string[], qb2: stri
         if (answer === "D") {
             weight = Math.max(weight, 6);
         }
+        if (answer === "E") {
+            weight = Math.max(weight, 10);
+        }
     }
     return weight
 }
@@ -360,4 +367,13 @@ export function categoriesToQueryString(categories: Categories): string {
     }
 
     return params.toString();
+}
+
+function dgpu(q1: string[]): boolean {
+    for (const answer of q1) {
+        if (answer !== "F") {
+            return true
+        }
+    }
+    return false;
 }

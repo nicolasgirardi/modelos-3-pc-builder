@@ -18,4 +18,5 @@ export interface Categories {
     storage_speed: number;
     price: number;
     budget: number;
+    dgpu: boolean;
 }

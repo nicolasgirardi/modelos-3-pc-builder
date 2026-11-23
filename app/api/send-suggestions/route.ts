@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         await transporter.sendMail({
             from: `"PC Builder Assistant" <${process.env.GMAIL_USER}>`,
             to: email,
-            subject: "Tus configuraciones de PC recomendadas",
+            subject: "Tus configuraciones de PC optimizadas",
             html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #1f2937;">Aquí tienes tus presupuestos de PC</h2>

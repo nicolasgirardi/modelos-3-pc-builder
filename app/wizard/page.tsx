@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import {PcBuild} from "@/app/types/quiz";
 
 interface FormData {
     q1: string[];
@@ -528,14 +529,159 @@ export default function PcBuilderQuiz() {
                     </p>
                 </div>
             )}
-            {showResults && (
-                <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-                    <h2 className="font-bold mb-2">Resultados (JSON):</h2>
-                    <pre className="text-xs overflow-x-auto">
-            {JSON.stringify(apiResponse, null, 2)}
-          </pre>
-                </div>
-            )}
+            {showResults && Array.isArray(apiResponse) && apiResponse.length > 0 && (() => {
+                // Separamos la mejor opción (índice 0) del resto
+                const [bestBuild, ...otherBuilds] = apiResponse;
+
+                // Función auxiliar para estructurar los componentes de cualquier armado
+                const getComponents = (build: PcBuild) => [
+                    { label: "Procesador", name: build.cpu_model, link: build.cpu_link },
+                    { label: "Placa de Video", name: build.gpu_model, link: build.gpu_link },
+                    { label: "Motherboard", name: build.motherboard_model, link: build.motherboard_link },
+                    {
+                        label: "Memoria RAM",
+                        name: `${build.ram_sticks > 1 ? `${build.ram_sticks}x ` : ""}${build.ram_model}`,
+                        link: build.ram_link,
+                    },
+                    { label: "Almacenamiento", name: build.storage_model, link: build.storage_link },
+                    { label: "Cooler CPU", name: build.cooler_model, link: build.cooler_link },
+                    { label: "Fuente", name: build.psu_model, link: build.psu_link },
+                    { label: "Gabinete", name: build.case_model, link: build.case_link },
+                ];
+
+                // Formateador de moneda
+                const formatPrice = (price: number) =>
+                    new Intl.NumberFormat("es-AR", {
+                        style: "currency",
+                        currency: "ARS",
+                        maximumFractionDigits: 0,
+                    }).format(price);
+
+                return (
+                    <div className="mt-8 space-y-8">
+                        <h2 className="text-2xl font-bold text-gray-800">
+                            Configuraciones Recomendadas ({apiResponse.length})
+                        </h2>
+
+                        {/* 🏆 OPCIÓN #1: TARJETA DESTACADA (ANCHO COMPLETO) */}
+                        <div className="bg-white border-2 border-indigo-500 rounded-2xl shadow-lg overflow-hidden">
+                            {/* Cabecera destacada */}
+                            <div className="p-6 bg-linear-to-r from-indigo-50 via-white to-indigo-50/40 border-b border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-2.5 mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-white bg-indigo-600 px-3 py-1 rounded-full shadow-sm">
+                ★ Mejor Opción (#1)
+              </span>
+                                        <span className="text-xs font-semibold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+                Match: {(bestBuild.score * 100).toFixed(1)}%
+              </span>
+                                    </div>
+                                    <p className="text-sm text-gray-600">
+                                        La configuración con el mejor equilibrio rendimiento/precio para tu búsqueda.
+                                    </p>
+                                </div>
+
+                                <div className="sm:text-right">
+                                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                        Precio Total Estimado
+                                    </p>
+                                    <p className="text-3xl sm:text-4xl font-black text-gray-900">
+                                        {formatPrice(bestBuild.price)}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Lista de componentes en 2 columnas para aprovechar el ancho */}
+                            <div className="p-6">
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1 text-sm">
+                                    {getComponents(bestBuild).map((item, idx) => (
+                                        <li
+                                            key={idx}
+                                            className="py-3 border-b border-gray-100 flex flex-col justify-center"
+                                        >
+                <span className="text-xs font-semibold text-indigo-500/80 uppercase tracking-wider">
+                  {item.label}
+                </span>
+                                            <a
+                                                href={item.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-gray-800 hover:text-indigo-600 transition-colors mt-0.5 flex items-center justify-between group text-base"
+                                                title={item.name}
+                                            >
+                                                <span className="truncate pr-3">{item.name}</span>
+                                                <span className="text-gray-400 group-hover:text-indigo-600 text-sm shrink-0">
+                    ↗
+                  </span>
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* 📋 RESTO DE OPCIONES (GRILLA DE 3 COLUMNAS COMO ANTES) */}
+                        {otherBuilds.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-700">
+                                    Otras alternativas ({otherBuilds.length})
+                                </h3>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {otherBuilds.map((build, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex flex-col justify-between bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
+                                        >
+                                            <div className="p-5 bg-gray-50 border-b border-gray-100">
+                                                <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-600 bg-gray-200/70 px-2.5 py-1 rounded-full">
+                      Opción #{index + 2}
+                    </span>
+                                                    <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                      Match: {(build.score * 100).toFixed(1)}%
+                    </span>
+                                                </div>
+
+                                                <div className="mt-3">
+                                                    <p className="text-xs text-gray-500">Precio Total Estimado</p>
+                                                    <p className="text-2xl font-extrabold text-gray-900">
+                                                        {formatPrice(build.price)}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="p-5 flex-1">
+                                                <ul className="divide-y divide-gray-100 text-sm">
+                                                    {getComponents(build).map((item, idx) => (
+                                                        <li key={idx} className="py-2.5 flex flex-col">
+                        <span className="text-xs font-medium text-gray-400">
+                          {item.label}
+                        </span>
+                                                            <a
+                                                                href={item.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="font-medium text-gray-700 hover:text-indigo-600 transition-colors line-clamp-1 mt-0.5 flex items-center justify-between group"
+                                                                title={item.name}
+                                                            >
+                                                                <span className="truncate pr-2">{item.name}</span>
+                                                                <span className="text-gray-400 group-hover:text-indigo-600 text-xs shrink-0">
+                            ↗
+                          </span>
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            })()}
         </div>
     );
 }

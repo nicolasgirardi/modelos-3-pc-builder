@@ -283,7 +283,7 @@ function ram_capacity(q1: string[], qa1: string | null, qb1: string[], qb2: stri
     }
     for (const answer of qb1) {
         if (answer === "A") {
-            weight = Math.max(weight, 10);
+            weight = Math.max(weight, 14);
         }
         if (answer === "B") {
             weight = Math.max(weight, 8);
@@ -321,10 +321,10 @@ function storage_capacity(q5: string | null, qb1: string[]): number {
     let weight = 1
     for (const answer of qb1) {
         if (answer === "A" || answer === "B") {
-            weight = Math.max(weight, 8);
+            weight = Math.max(weight, 12);
         }
         if (answer === "C") {
-            weight = Math.max(weight, 3);
+            weight = Math.max(weight, 5);
         }
         if (answer === "D") {
             weight = Math.max(weight, 2);

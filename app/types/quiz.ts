@@ -20,3 +20,25 @@ export interface Categories {
     budget: number;
     dgpu: boolean;
 }
+
+export interface PcBuild {
+    cpu_model: string;
+    cpu_link: string;
+    motherboard_model: string;
+    motherboard_link: string;
+    cooler_model: string;
+    cooler_link: string;
+    ram_model: string;
+    ram_link: string;
+    ram_sticks: number;
+    gpu_model: string;
+    gpu_link: string;
+    storage_model: string;
+    storage_link: string;
+    psu_model: string;
+    psu_link: string;
+    case_model: string;
+    case_link: string;
+    price: number;
+    score: number;
+}

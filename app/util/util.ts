@@ -116,7 +116,7 @@ function gpu_gaming_performance(q1: string[], qb1: string[], qb2: string | null)
             weight = Math.max(weight, 12);
         }
         if (answer === "C") {
-            weight = Math.max(weight, 4);
+            weight = Math.max(weight, 6);
         }
     }
     for (const answer of q1) {

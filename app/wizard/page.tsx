@@ -79,6 +79,27 @@ export default function PcBuilderQuiz() {
         setFormData((prev) => ({ ...prev, [question]: value }));
     };
 
+    const handleReset = () => {
+        setFormData({
+            q1: [],
+            q2: "",
+            q3: [],
+            q4: "",
+            q5: "",
+            q6: "",
+            q7: "",
+            q8: "",
+            q9: "",
+            q10: "",
+            q11: "",
+            q12: "",
+        });
+        setSubmittedData(null);
+        setSubmittedData(null);
+        setApiResponse({});
+        setError(null);
+    };
+
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>)=> {
         e.preventDefault();
         setShowResults(false);
@@ -161,7 +182,8 @@ export default function PcBuilderQuiz() {
                         { id: "B", label: "Jugar videojuegos" },
                         { id: "C", label: "Live streaming y/o creación de contenido" },
                         { id: "D", label: "Programación" },
-                        { id: "E", label: "Navegar en internet, leer y escribir correo, ver series, películas o videos" },
+                        { id: "E", label: "Ejecutar modelos de IA localmente"},
+                        { id: "F", label: "Navegar en internet, leer y escribir correo, ver series, películas o videos" },
                     ].map((option) => (
                         <label key={option.id} className="flex items-start space-x-3 cursor-pointer">
                             <input
@@ -270,10 +292,12 @@ export default function PcBuilderQuiz() {
                     <label className="block font-semibold text-lg">
                         3. ¿Qué tipo de archivos espera almacenar en la computadora?
                     </label>
+
                     {[
-                        { id: "A", label: "Muchas fotos, videos, contenido multimedia u otros archivos de gran tamaño" },
+                        { id: "A", label: "Poco y nada, guardo todo remotamente" },
                         { id: "B", label: "Documentos, planillas, archivos de texto u otros archivos de tamaño pequeño" },
-                        { id: "C", label: "No voy a guardar localmente, guardo mis archivos en la nube y/o en una NAS" },
+                        { id: "C", label: "Archivos multimedia, fotos, videos, música, películas" },
+                        { id: "D", label: "ISOs de Linux ;D"}
                     ].map((option) => (
                         <label key={option.id} className="flex items-start space-x-3 cursor-pointer">
                             <input
@@ -427,7 +451,7 @@ export default function PcBuilderQuiz() {
                 {/* PREGUNTA 11 */}
                 <div className="space-y-3">
                     <label htmlFor="budget" className="block font-semibold text-lg">
-                        9. ¿Cuál es el monto máximo que está dispuesto a gastar?
+                        9. ¿Cuál es el monto máximo que está dispuesto a gastar? En ARS
                     </label>
                     <div className="relative rounded-md shadow-sm max-w-xs">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -481,6 +505,13 @@ export default function PcBuilderQuiz() {
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                 >
                     Obtener recomendación
+                </button>
+                <button
+                    type="button"
+                    onClick={handleReset}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                >
+                    Resetear Cuestionario
                 </button>
             </form>
 

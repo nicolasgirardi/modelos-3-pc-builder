@@ -31,7 +31,7 @@ export function answersToWeights(data: URLSearchParams): Categories {
         rating: upgradable(answers.q10),
         ram_capacity: ram_capacity(answers.q1, answers.q2, answers.q3, answers.q4),
         ram_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2))/2),
-        storage_capacity: storage_capacity(answers.q5),
+        storage_capacity: storage_capacity(answers.q5, answers.q3),
         storage_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2))/2),
         price: price(answers.q12),
         budget: answers.q11
@@ -40,62 +40,57 @@ export function answersToWeights(data: URLSearchParams): Categories {
 
 function cpu_general_performance(q1: string[], qa1: string | null): number {
     let weight = 1
-    let w1 = 0
-    for (const answer of q1) {
-        if (answer === "A") {
-            w1 = Math.max(w1, 6);
-        }
-        if (answer === "B") {
-            w1 = Math.max(w1, 2);
-        }
-        if (answer === "C") {
-            w1 = Math.max(w1, 8);
-        }
-        if (answer === "D") {
-            w1 = Math.max(w1, 6);
-        }
-    }
-    weight = weight + w1
     if  (qa1 !== null) {
         if (qa1 === "B") {
-            weight = weight + 1;
+            weight = 3;
         }
         if (qa1 === "C") {
-            weight = weight + 3;
+            weight = 8;
         }
         if (qa1 === "D") {
-            weight = weight + 5;
+            weight = 14;
+        }
+
+    }
+    for (const answer of q1) {
+        if (answer === "B") {
+            weight = Math.max(weight, 4);
+        }
+        if (answer === "C") {
+            weight = Math.max(weight, 20);
+        }
+        if (answer === "D") {
+            weight = Math.max(weight, 10);
+        }
+        if (answer === "E") {
+            weight = Math.max(weight, 14);
         }
     }
     return weight
 }
 
 function cpu_gaming_performance(q1: string[], qb1: string[]): number {
-    let w1 = 0
-    for (const answer of q1) {
-        if (answer === "B") {
-            w1 = Math.max(w1, 8);
-        }
-        if (answer === "C") {
-            w1 = Math.max(w1, 6);
-        }
-    }
-    let w2 = 0
+    let weight = 1
     for (const answer of qb1) {
         if (answer === "A") {
-            w2 = Math.max(w2, 6);
+            weight = Math.max(weight, 10);
         }
         if (answer === "B") {
-            w2 = Math.max(w2, 8);
+            weight = Math.max(weight, 15);
         }
         if (answer === "C") {
-            w2 = Math.max(w2, 2);
+            weight = Math.max(weight, 6);
         }
         if (answer === "D") {
-            w2 = Math.max(w2, 2);
+            weight = Math.max(weight, 4);
         }
     }
-    return w1 + w2 + 1
+    for (const answer of q1) {
+        if (answer === "C") {
+            weight = Math.max(weight, 20);
+        }
+    }
+    return weight
 }
 
 function upgradable(q8: string | null): number {
@@ -112,37 +107,25 @@ function upgradable(q8: string | null): number {
 
 function gpu_gaming_performance(q1: string[], qb1: string[], qb2: string | null) : number {
     let weight = 1
-    let w1 = 0
-    for (const answer of q1) {
-        if (answer === "B") {
-            w1 = Math.max(w1, 6);
-        }
-        if (answer === "C") {
-            w1 = Math.max(w1, 6);
-        }
-    }
-    let w2 = 0
     for (const answer of qb1) {
         if (answer === "A") {
-            w2 = Math.max(w2, 10);
+            weight = Math.max(weight, 15);
         }
         if (answer === "B") {
-            w2 = Math.max(w2, 8);
+            weight = Math.max(weight, 10);
         }
         if (answer === "C") {
-            w2 = Math.max(w2, 3);
-        }
-        if (answer === "D") {
-            w2 = Math.max(w2, 1);
+            weight = Math.max(weight, 4);
         }
     }
-    weight = weight + w1 + w2
-    if  (qb2 !== null) {
-        if (qb2 === "A") {
-            weight = weight + 1;
+    for (const answer of q1) {
+        if (answer === "C") {
+            weight = Math.max(weight, 20);
         }
+    }
+    if  (qb2 !== null) {
         if (qb2 === "B") {
-            weight = weight + 3;
+            weight = weight + 2;
         }
         if (qb2 === "C") {
             weight = weight + 6;
@@ -153,28 +136,23 @@ function gpu_gaming_performance(q1: string[], qb1: string[], qb2: string | null)
 
 function gpu_productivity_performance(q1: string[], qa1: string | null): number {
     let weight = 1
-    let w1 = 0
-    for (const answer of q1) {
-        if (answer === "A") {
-            w1 = Math.max(w1, 4);
-        }
-        if (answer === "B") {
-            w1 = Math.max(w1, 1);
-        }
-        if (answer === "C") {
-            w1 = Math.max(w1, 6);
-        }
-    }
-    weight = weight + w1
     if  (qa1 !== null) {
         if (qa1 === "B") {
-            weight = weight + 1;
+            weight = 6;
         }
         if (qa1 === "C") {
-            weight = weight + 2;
+            weight = 8;
         }
         if (qa1 === "D") {
-            weight = weight + 7;
+            weight = 16;
+        }
+    }
+    for (const answer of q1) {
+        if (answer === "C" || answer === "E") {
+            weight = Math.max(weight, 20);
+        }
+        if (answer === "D") {
+            weight = Math.max(weight, 6);
         }
     }
     return weight
@@ -184,18 +162,18 @@ function vram(q1: string[], qa1: string | null, qb1: string[], qb2: string | nul
     let weight = 1
     if  (qa1 !== null) {
         if (qa1 === "B") {
-            weight = weight + 1;
+            weight = 2;
         }
         if (qa1 === "C") {
-            weight = weight + 3;
+            weight = 4;
         }
         if (qa1 === "D") {
-            weight = weight + 5;
+            weight = 8;
         }
     }
     for (const answer of qb1) {
         if (answer === "A") {
-            weight = Math.max(weight, 8);
+            weight = Math.max(weight, 12);
         }
         if (answer === "B") {
             weight = Math.max(weight, 6);
@@ -212,15 +190,18 @@ function vram(q1: string[], qa1: string | null, qb1: string[], qb2: string | nul
             weight = weight + 1;
         }
         if (qb2 === "B") {
-            weight = weight + 4;
+            weight = weight + 2;
         }
         if (qb2 === "C") {
-            weight = weight + 8;
+            weight = weight + 4;
         }
     }
     for (const answer of q1) {
         if (answer === "C") {
             weight = Math.max(weight, 10);
+        }
+        if (answer === "E") {
+            weight = Math.max(weight, 20);
         }
     }
     return weight
@@ -274,7 +255,7 @@ function ports(q5: string | null): number {
 function nvme(q6: string | null): number {
     if  (q6 !== null) {
         if (q6 === "A") {
-            return 6
+            return 8
         }
         if (q6 === "B") {
             return 4
@@ -284,16 +265,16 @@ function nvme(q6: string | null): number {
 }
 
 function ram_capacity(q1: string[], qa1: string | null, qb1: string[], qb2: string | null): number {
-    let weight = 1
+    let weight = 2
     if  (qa1 !== null) {
         if (qa1 === "B") {
-            weight = weight + 3;
+            weight = 4;
         }
         if (qa1 === "C") {
-            weight = weight + 3;
+            weight = 6;
         }
         if (qa1 === "D") {
-            weight = weight + 5;
+            weight = 8;
         }
     }
     for (const answer of qb1) {
@@ -311,31 +292,46 @@ function ram_capacity(q1: string[], qa1: string | null, qb1: string[], qb2: stri
         }
     }
     if  (qb2 !== null) {
-        if (qb2 === "A") {
-            weight = weight +  3;
-        }
         if (qb2 === "B") {
-            weight = weight + 4;
+            weight = weight + 1;
         }
         if (qb2 === "C") {
-            weight = weight + 5;
+            weight = weight + 2;
         }
     }
     for (const answer of q1) {
-        if (answer === "C") {
-            weight = Math.max(weight, 8);
+        if (answer === "C" || answer === "E") {
+            weight = Math.max(weight, 14);
+        }
+        if (answer === "D") {
+            weight = Math.max(weight, 6);
         }
     }
     return weight
 }
 
-function storage_capacity(q5: string | null): number {
-    if (q5 !== null) {
-        if (q5 === "A") {
-            return 8
+function storage_capacity(q5: string | null, qb1: string[]): number {
+    let weight = 1
+    for (const answer of qb1) {
+        if (answer === "A" || answer === "B") {
+            weight = Math.max(weight, 8);
         }
+        if (answer === "C") {
+            weight = Math.max(weight, 3);
+        }
+        if (answer === "D") {
+            weight = Math.max(weight, 2);
+        }
+    }
+    if (q5 !== null) {
         if (q5 === "B") {
-            return 4
+            return Math.max(weight, 4);
+        }
+        if (q5 === "C") {
+            return Math.max(weight, 6);
+        }
+        if (q5 === "D") {
+            return Math.max(weight, 10);
         }
     }
     return 1

@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import {PcBuild} from "@/app/types/quiz";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+    },
+});
 
 export async function POST(request: Request) {
     try {
@@ -16,7 +22,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Formateador de moneda para el correo
         const formatPrice = (price: number) =>
             new Intl.NumberFormat("es-AR", {
                 style: "currency",
@@ -24,7 +29,6 @@ export async function POST(request: Request) {
                 maximumFractionDigits: 0,
             }).format(price);
 
-        // Armamos el HTML del correo con las opciones y sus enlaces
         const buildsHtml = builds
             .map(
                 (build, index) => `
@@ -49,9 +53,9 @@ export async function POST(request: Request) {
             )
             .join("");
 
-        const { data, error } = await resend.emails.send({
-            from: "PC Builder Assistant <onboarding@resend.dev>", // En modo prueba solo envía a tu propio mail registrado en Resend
-            to: [email],
+        await transporter.sendMail({
+            from: `"PC Builder Assistant" <${process.env.GMAIL_USER}>`,
+            to: email,
             subject: "Tus configuraciones de PC recomendadas",
             html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -62,14 +66,11 @@ export async function POST(request: Request) {
       `,
         });
 
-        if (error) {
-            return NextResponse.json({ error: error.message }, { status: 400 });
-        }
-
-        return NextResponse.json({ success: true, id: data?.id });
-    } catch (err) {
+        return NextResponse.json({ success: true });
+    } catch (err: any) {
+        console.error("Error enviando correo con Nodemailer:", err);
         return NextResponse.json(
-            { error: "Error interno del servidor al enviar el correo." },
+            { error: "No se pudo enviar el correo. Verifica la configuración." },
             { status: 500 }
         );
     }

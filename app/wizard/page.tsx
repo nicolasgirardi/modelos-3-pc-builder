@@ -791,7 +791,7 @@ export default function PcBuilderQuiz() {
                             onClick={handleSave}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                         >
-                            Quiero que me envien las recoemdaciones
+                            Quiero que me envien las listas de partes generadas
                         </button>
                         {showEmail && (
                             <div className="space-y-3">

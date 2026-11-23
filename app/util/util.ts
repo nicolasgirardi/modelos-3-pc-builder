@@ -14,13 +14,14 @@ export function answersToWeights(data: URLSearchParams): Categories {
         q10: data.get("q10"),
         q11: Number(data.get("q11") ?? 30000000),    // 3000000
         q12: data.get("q12"),
+        qgpu: data.get("qgpu"),
     };
     return {
         cpu_general_performance: cpu_general_performance(answers.q1, answers.q2),
         cpu_gaming_performance: cpu_gaming_performance(answers.q1, answers.q3),
         upgradable: upgradable(answers.q10),
         gpu_gaming_performance: gpu_gaming_performance(answers.q1, answers.q3, answers.q4),
-        gpu_productivity_performance: gpu_productivity_performance(answers.q1, answers.q2),
+        gpu_productivity_performance: gpu_productivity_performance(answers.q1, answers.q2, answers.qgpu),
         vram: vram(answers.q1, answers.q2, answers.q3, answers.q4),
         rgb: rgb(answers.q9),
         noise: noise(answers.q8),
@@ -30,12 +31,12 @@ export function answersToWeights(data: URLSearchParams): Categories {
         nvme: nvme(answers.q6),
         rating: upgradable(answers.q10),
         ram_capacity: ram_capacity(answers.q1, answers.q2, answers.q3, answers.q4),
-        ram_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2))/2),
+        ram_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2, answers.qgpu))/2),
         storage_capacity: storage_capacity(answers.q5, answers.q3),
-        storage_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2))/2),
+        storage_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2, answers.qgpu))/2),
         price: price(answers.q12),
         budget: answers.q11,
-        dgpu: dgpu(answers.q1)
+        dgpu: dgpu(answers.q1, answers.qgpu)
     }
 }
 
@@ -135,7 +136,7 @@ function gpu_gaming_performance(q1: string[], qb1: string[], qb2: string | null)
     return weight
 }
 
-function gpu_productivity_performance(q1: string[], qa1: string | null): number {
+function gpu_productivity_performance(q1: string[], qa1: string | null, qgpu: string | null): number {
     let weight = 1
     if  (qa1 !== null) {
         if (qa1 === "B") {
@@ -152,11 +153,13 @@ function gpu_productivity_performance(q1: string[], qa1: string | null): number 
         if (answer === "C" || answer === "E") {
             weight = Math.max(weight, 16);
         }
-        if (answer === "D") {
-            weight = Math.max(weight, 6);
-        }
         if (answer === "F") {
             weight = Math.max(weight, 20);
+        }
+    }
+    if (qgpu !== null) {
+        if (qgpu === "A") {
+            weight = Math.max(weight, 6);
         }
     }
     return weight
@@ -369,9 +372,14 @@ export function categoriesToQueryString(categories: Categories): string {
     return params.toString();
 }
 
-function dgpu(q1: string[]): boolean {
+function dgpu(q1: string[], qgpu: string | null): boolean {
+    if (qgpu !== null) {
+        if (qgpu === "A") {
+            return true
+        }
+    }
     for (const answer of q1) {
-        if (answer !== "F") {
+        if (answer !== "D" && answer !== "F") {
             return true
         }
     }

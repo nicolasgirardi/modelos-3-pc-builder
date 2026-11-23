@@ -16,6 +16,7 @@ interface FormData {
     q10: string;
     q11: string;
     q12: string;
+    qgpu: string;
 }
 
 export default function PcBuilderQuiz() {
@@ -32,11 +33,18 @@ export default function PcBuilderQuiz() {
         q10: "",
         q11: "",
         q12: "",
+        qgpu: "",
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showError, setShowError] = useState<boolean>(false);
     const [apiResponse, setApiResponse] = useState({})
     const [showResults, setShowResults] = useState<boolean>(false);
+    const [showEmail, setShowEmail] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>("");
+    const [emailError, setEmailError] = useState<string>("");
+    const [isSending, setIsSending] = useState(false);
+    const [emailSent, setEmailSent] = useState(false);
 
     const formatNumberWithDots = (value: string) => {
         const numericValue = value.replace(/\D/g, "");
@@ -46,11 +54,11 @@ export default function PcBuilderQuiz() {
         return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
 
-    const [submittedData, setSubmittedData] = useState<FormData | null>(null);
 
     // Condiciones de visibilidad
     const showQ2 = formData.q1.includes("A");
     const showQ3AndQ4 = formData.q1.includes("B");
+    const showQgpu = formData.q1.includes("D");
 
     // Manejador para checkboxes (Pregunta 1 y 3)
     const handleCheckboxChange = (question: "q1" | "q3", value: string) => {
@@ -68,6 +76,7 @@ export default function PcBuilderQuiz() {
                     q2: updatedValues.includes("A") ? prev.q2 : "",
                     q3: updatedValues.includes("B") ? prev.q3 : [],
                     q4: updatedValues.includes("B") ? prev.q4 : "",
+                    qgpu: updatedValues.includes("D") ? prev.qgpu : "",
                 };
             }
 
@@ -79,6 +88,52 @@ export default function PcBuilderQuiz() {
     const handleInputChange = (question: keyof FormData, value: string) => {
         setFormData((prev) => ({ ...prev, [question]: value }));
     };
+
+    const handleSave = () => {
+        setShowEmail(true)
+    }
+
+    const handleSendEmail = async () => {
+        setIsSending(true);
+        setEmailError("");
+        setEmailSent(false);
+
+        try {
+            const response = await fetch("/api/send-suggestions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email,
+                    builds: apiResponse,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                setError(errorData?.error || `Error del servidor (${response.status})`);
+                setShowError(true);
+                return;
+            }
+
+            setEmailSent(true);
+        } catch (err: any) {
+            setEmailError(err.message || "No se pudo enviar el correo.");
+            setShowError(true);
+        } finally {
+            setIsSending(false);
+        }
+    };
+
+    const handleEmailSubmit = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!email.trim() || !emailRegex.test(email)) {
+            setEmailError("Por favor, ingresa un correo electrónico válido.");
+            return;
+        }
+        setEmailError("");
+        handleSendEmail().then();
+    }
 
     const handleReset = () => {
         setFormData({
@@ -94,13 +149,16 @@ export default function PcBuilderQuiz() {
             q10: "",
             q11: "",
             q12: "",
+            qgpu: "",
         });
-        setSubmittedData(null);
-        setSubmittedData(null);
         setShowResults(false)
         setApiResponse({});
+        setShowEmail(false)
         setError(null);
+        setShowError(false);
+        setShowResults(false);
     };
+
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>)=> {
         e.preventDefault();
@@ -108,15 +166,11 @@ export default function PcBuilderQuiz() {
         setApiResponse({})
         setIsLoading(true);
         setError(null);
+        setShowError(false);
 
         const numericBudget = Number(formData.q11.replace(/\./g, ""));
 
-        const finalData = {
-            ...formData,
-            q11: numericBudget,
-        };
 
-        setSubmittedData(finalData as any);
 
         const params = new URLSearchParams();
         if (formData.q1.length > 0) params.append("q1", formData.q1.join(","));
@@ -132,6 +186,7 @@ export default function PcBuilderQuiz() {
         if (formData.q10) params.append("q10", formData.q10);
         if (numericBudget) params.append("q11", numericBudget.toString());
         if (formData.q12) params.append("q12", formData.q12);
+        if (formData.qgpu) params.append("qgpu", formData.qgpu);
 
         const url = `/api/optimize?${params.toString()}`;
 
@@ -146,10 +201,15 @@ export default function PcBuilderQuiz() {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
                 setError(errorData?.error || `Error del servidor (${response.status})`);
+                setShowError(true);
                 return; // Corta la ejecución acá (el bloque finally se ejecuta igual)
             }
 
             const data = await response.json();
+            if (!Array.isArray(data) || Array(data).length === 0) {
+                setApiResponse([]);
+                return;
+            }
             setApiResponse(data);
             setShowResults(true)
         } catch (err: unknown) {
@@ -159,6 +219,7 @@ export default function PcBuilderQuiz() {
             } else {
                 setError("Error de conexión al consultar la API");
             }
+            setShowError(true);
         } finally {
             setIsLoading(false);
         }
@@ -286,6 +347,33 @@ export default function PcBuilderQuiz() {
                                 </label>
                             ))}
                         </div>
+                    </div>
+                )}
+
+                {showQgpu && (
+                    <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg space-y-3 transition-all">
+                        <label className="block font-semibold text-lg">
+                            D-1. Dijo que va a usar la computadora para tareas de programación, ¿Esto incluye tareas de
+                            renderizado 3D, desarrollo de video juegos o machine learning?
+                        </label>
+                        {[
+                            { id: "A", label: "Si" },
+                            { id: "B", label: "No" },
+                        ].map((option) => (
+                            <label key={option.id} className="flex items-center space-x-3 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="qgpu"
+                                    required={showQgpu}
+                                    checked={formData.qgpu === option.id}
+                                    onChange={() => handleInputChange("qgpu", option.id)}
+                                    className="h-4 w-4 text-blue-600 border-gray-300"
+                                />
+                                <span>
+                  <strong>{option.id}-</strong> {option.label}
+                </span>
+                            </label>
+                        ))}
                     </div>
                 )}
 
@@ -529,6 +617,25 @@ export default function PcBuilderQuiz() {
                     </p>
                 </div>
             )}
+
+            {showError && (
+                <div className="flex flex-col items-center justify-center my-6">
+                    <img
+                        src="/cat-error.webp"
+                        alt="Error del servidor"
+                        className="w-xl h-xl object-contain rounded-lg"
+                    />
+                    <p className="mt-2 text-sm text-gray-500 animate-pulse">
+                        Error en el servidor, nuestros técnicos están trabajando para solucionarlo
+                    </p>
+                    {error && (
+                        <p className="mt-2 text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-md font-mono">
+                            {error}
+                        </p>
+                    )}
+                </div>
+            )}
+
             {showResults && Array.isArray(apiResponse) && apiResponse.length > 0 && (() => {
                 // Separamos la mejor opción (índice 0) del resto
                 const [bestBuild, ...otherBuilds] = apiResponse;
@@ -678,6 +785,71 @@ export default function PcBuilderQuiz() {
                                     ))}
                                 </div>
                             </div>
+                        )}
+                        <button
+                            type="button"
+                            onClick={handleSave}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                        >
+                            Quiero que me envien las recoemdaciones
+                        </button>
+                        {showEmail && (
+                            <div className="space-y-3">
+                                <div>
+                                    <label
+                                        htmlFor="suggestion-email"
+                                        className="block text-sm font-medium text-gray-700 mb-1"
+                                    >
+                                        Tu correo electrónico
+                                    </label>
+                                    <input
+                                        id="suggestion-email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            // Oculta el error apenas el usuario empieza a corregir
+                                            if (emailError) setEmailError("");
+                                        }}
+                                        placeholder="ejemplo@correo.com"
+                                        className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 focus:outline-none focus:ring-2 transition-colors ${
+                                            emailError
+                                                ? "border-red-500 focus:ring-red-200 bg-red-50/30"
+                                                : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                        }`}
+                                    />
+                                    {emailError && (
+                                        <p className="mt-1.5 text-xs font-medium text-red-600 flex items-center gap-1">
+                                            <span>⚠</span> {emailError}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleEmailSubmit}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                                >
+                                    Enviar Listados de partes
+                                </button>
+                            </div>
+                        )}
+                        {isSending && (
+                            <div className="flex flex-col items-center justify-center my-6">
+                                <img
+                                    src="/cat-pc.gif"
+                                    alt="Enviando Email"
+                                    className="w-xl h-xl object-contain rounded-lg"
+                                />
+                                <p className="mt-2 text-sm text-gray-500 animate-pulse">
+                                    Enviando Email
+                                </p>
+                            </div>
+                        )}
+                        {emailSent && (
+                            <p className="mt-2 text-xs text-green-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-md font-mono">
+                                Email Enviado con éxito
+                            </p>
                         )}
                     </div>
                 );

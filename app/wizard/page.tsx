@@ -96,6 +96,7 @@ export default function PcBuilderQuiz() {
         });
         setSubmittedData(null);
         setSubmittedData(null);
+        setShowResults(false)
         setApiResponse({});
         setError(null);
     };
@@ -515,18 +516,21 @@ export default function PcBuilderQuiz() {
                 </button>
             </form>
 
-            {/* Vista previa de resultados (Opcional, para pruebas) */}
-            {submittedData && (
-                <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-                    <h2 className="font-bold mb-2">Datos capturados (JSON):</h2>
-                    <pre className="text-xs overflow-x-auto">
-            {JSON.stringify(submittedData, null, 2)}
-          </pre>
+            {isLoading && (
+                <div className="flex flex-col items-center justify-center my-6">
+                    <img
+                        src="/loading.gif"
+                        alt="Cargando recomendación..."
+                        className="w-48 h-48 object-contain rounded-lg"
+                    />
+                    <p className="mt-2 text-sm text-gray-500 animate-pulse">
+                        Buscando los mejores componentes...
+                    </p>
                 </div>
             )}
             {showResults && (
                 <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-                    <h2 className="font-bold mb-2">Datos capturados (JSON):</h2>
+                    <h2 className="font-bold mb-2">Resultados (JSON):</h2>
                     <pre className="text-xs overflow-x-auto">
             {JSON.stringify(apiResponse, null, 2)}
           </pre>

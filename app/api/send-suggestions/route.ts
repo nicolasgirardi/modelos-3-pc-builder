@@ -42,7 +42,7 @@ export async function POST(request: Request) {
             <li><strong>CPU:</strong> <a href="${build.cpu_link}">${build.cpu_model}</a></li>
             <li><strong>GPU:</strong> <a href="${build.gpu_link}">${build.gpu_model}</a></li>
             <li><strong>Motherboard:</strong> <a href="${build.motherboard_link}">${build.motherboard_model}</a></li>
-            <li><strong>RAM:</strong> <a href="${build.ram_link}">${build.ram_sticks > 1 ? `${build.ram_sticks}x ` : ""}${build.ram_model}</a></li>
+            <li><strong>RAM:</strong> <a href="${build.ram_link}">${build.ram_sticks} x ${build.ram_model}</a></li>
             <li><strong>Almacenamiento:</strong> <a href="${build.storage_link}">${build.storage_model}</a></li>
             <li><strong>Cooler:</strong> <a href="${build.cooler_link}">${build.cooler_model}</a></li>
             <li><strong>Fuente:</strong> <a href="${build.psu_link}">${build.psu_model}</a></li>

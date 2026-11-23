@@ -647,7 +647,7 @@ export default function PcBuilderQuiz() {
                     { label: "Motherboard", name: build.motherboard_model, link: build.motherboard_link },
                     {
                         label: "Memoria RAM",
-                        name: `${build.ram_sticks > 1 ? `${build.ram_sticks}x ` : ""}${build.ram_model}`,
+                        name: `${build.ram_sticks} x ${build.ram_model}`,
                         link: build.ram_link,
                     },
                     { label: "Almacenamiento", name: build.storage_model, link: build.storage_link },
@@ -847,7 +847,7 @@ export default function PcBuilderQuiz() {
                             </div>
                         )}
                         {emailSent && (
-                            <p className="mt-2 text-xs text-green-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-md font-mono">
+                            <p className="mt-2 text-xs text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-md font-mono">
                                 Email Enviado con éxito
                             </p>
                         )}

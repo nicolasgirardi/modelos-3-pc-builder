@@ -598,15 +598,17 @@ export default function PcBuilderQuiz() {
                     type="submit"
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                 >
-                    Obtener recomendación
+                    Generar mi PC ideal
                 </button>
-                <button
-                    type="button"
-                    onClick={handleReset}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
-                >
-                    Resetear Cuestionario
-                </button>
+                {!isLoading && (
+                    <button
+                        type="button"
+                        onClick={handleReset}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
+                    >
+                        Reiniciar Cuestionario
+                    </button>
+                )}
             </form>
 
             {isLoading && (
@@ -617,7 +619,7 @@ export default function PcBuilderQuiz() {
                         className="w-48 h-48 object-contain rounded-lg"
                     />
                     <p className="mt-2 text-sm text-gray-500 animate-pulse">
-                        Buscando los mejores componentes...
+                        Calculando...
                     </p>
                 </div>
             )}
@@ -795,7 +797,7 @@ export default function PcBuilderQuiz() {
                             onClick={handleSave}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                         >
-                            Quiero que me envien las listas de partes generadas
+                            Quiero que me envien los resultados
                         </button>
                         {showEmail && (
                             <div className="space-y-3">
@@ -834,7 +836,7 @@ export default function PcBuilderQuiz() {
                                     onClick={handleEmailSubmit}
                                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
                                 >
-                                    Enviar Listados de partes
+                                    Enviar resultados
                                 </button>
                             </div>
                         )}

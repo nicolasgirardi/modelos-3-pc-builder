@@ -10,6 +10,9 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+const sleep = (ms: number): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -21,7 +24,7 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
-
+        await sleep(1000)
         const formatPrice = (price: number) =>
             new Intl.NumberFormat("es-AR", {
                 style: "currency",

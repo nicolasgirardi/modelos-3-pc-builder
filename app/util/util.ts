@@ -56,7 +56,7 @@ function cpu_general_performance(q1: string[], qa1: string | null): number {
     }
     for (const answer of q1) {
         if (answer === "B") {
-            weight = Math.max(weight, 4);
+            weight = Math.max(weight, 2);
         }
         if (answer === "C") {
             weight = Math.max(weight, 20);
@@ -75,10 +75,10 @@ function cpu_gaming_performance(q1: string[], qb1: string[]): number {
     let weight = 1
     for (const answer of qb1) {
         if (answer === "A") {
-            weight = Math.max(weight, 10);
+            weight = Math.max(weight, 12);
         }
         if (answer === "B") {
-            weight = Math.max(weight, 15);
+            weight = Math.max(weight, 16);
         }
         if (answer === "C") {
             weight = Math.max(weight, 6);
@@ -111,7 +111,7 @@ function gpu_gaming_performance(q1: string[], qb1: string[], qb2: string | null)
     let weight = 1
     for (const answer of qb1) {
         if (answer === "A") {
-            weight = Math.max(weight, 15);
+            weight = Math.max(weight, 16);
         }
         if (answer === "B") {
             weight = Math.max(weight, 12);
@@ -304,7 +304,7 @@ function ram_capacity(q1: string[], qa1: string | null, qb1: string[], qb2: stri
             weight = Math.max(weight, 14);
         }
         if (answer === "B") {
-            weight = Math.max(weight, 8);
+            weight = Math.max(weight, 12);
         }
         if (answer === "C") {
             weight = Math.max(weight, 3);

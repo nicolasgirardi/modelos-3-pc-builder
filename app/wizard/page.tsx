@@ -206,8 +206,9 @@ export default function PcBuilderQuiz() {
             }
 
             const data = await response.json();
-            if (!Array.isArray(data) || Array(data).length === 0) {
+            if (!Array.isArray(data) || data.length === 0) {
                 setApiResponse([]);
+                setShowResults(true); // <-- Importante para saber que ya se hizo el submit y devolvió 0
                 return;
             }
             setApiResponse(data);
@@ -600,6 +601,12 @@ export default function PcBuilderQuiz() {
                 >
                     Generar mi PC ideal
                 </button>
+
+                {!isLoading && showResults && Array.isArray(apiResponse) && apiResponse.length === 0 && (
+                    <div className="p-4 bg-amber-50 border border-amber-300 text-amber-800 rounded-lg text-sm text-center font-medium">
+                        Lamentablemente no pudimos armar una PC que esté dentro de su presupuesto. Por favor, intentá aumentarlo y volvé a generar tu PC.
+                    </div>
+                )}
                 {!isLoading && (
                     <button
                         type="button"

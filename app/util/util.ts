@@ -31,9 +31,9 @@ export function answersToWeights(data: URLSearchParams): Categories {
         nvme: nvme(answers.q6),
         rating: upgradable(answers.q10),
         ram_capacity: ram_capacity(answers.q1, answers.q2, answers.q3, answers.q4),
-        ram_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2, answers.qgpu))/2),
+        ram_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + cpu_gaming_performance(answers.q1, answers.q3))/2),
         storage_capacity: storage_capacity(answers.q5, answers.q3),
-        storage_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + gpu_productivity_performance(answers.q1, answers.q2, answers.qgpu))/2),
+        storage_speed: Math.floor((cpu_general_performance(answers.q1, answers.q2) + cpu_gaming_performance(answers.q1, answers.q3))/2),
         price: price(answers.q12),
         budget: answers.q11,
         dgpu: dgpu(answers.q1, answers.qgpu)

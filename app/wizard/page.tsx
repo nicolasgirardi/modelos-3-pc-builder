@@ -623,7 +623,7 @@ export default function PcBuilderQuiz() {
                     <img
                         src="/loading.gif"
                         alt="Cargando recomendación..."
-                        className="w-48 h-48 object-contain rounded-lg"
+                        className="w-xl h-xl object-contain rounded-lg"
                     />
                     <p className="mt-2 text-sm text-gray-500 animate-pulse">
                         Calculando...

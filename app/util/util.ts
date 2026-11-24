@@ -27,7 +27,7 @@ export function answersToWeights(data: URLSearchParams): Categories {
         noise: noise(answers.q8),
         ports: ports(answers.q5),
         wifi: wifi(answers.q7),
-        ethernet: 8-wifi(answers.q7),
+        ethernet: ethernet(answers.q7),
         nvme: nvme(answers.q6),
         rating: upgradable(answers.q10),
         ram_capacity: ram_capacity(answers.q1, answers.q2, answers.q3, answers.q4),
@@ -235,7 +235,7 @@ function noise(q8: string | null): number {
             return 5
         }
         if (q8 === "D") {
-            return 7
+            return 10
         }
     }
     return 1
@@ -243,8 +243,23 @@ function noise(q8: string | null): number {
 
 function wifi(q7: string | null): number {
     if  (q7 !== null) {
-        if (q7 === "B") {
-            return 7
+        if (q7 === "B" || q7 === "C") {
+            return 8
+        }
+        if (q7 === "D") {
+            return 4
+        }
+    }
+    return 1
+}
+
+function ethernet(q7: string | null): number {
+    if  (q7 !== null) {
+        if (q7 === "A" || q7 === "C") {
+            return 8
+        }
+        if (q7 === "D") {
+            return 4
         }
     }
     return 1

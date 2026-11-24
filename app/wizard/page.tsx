@@ -380,9 +380,8 @@ export default function PcBuilderQuiz() {
                 {/* PREGUNTA 5 */}
                 <div className="space-y-3">
                     <label className="block font-semibold text-lg">
-                        3. ¿Qué tipo de archivos espera almacenar en la computadora?
+                        3. ¿Qué tipo de archivos espera almacenar principalmente en la computadora?
                     </label>
-
                     {[
                         { id: "A", label: "Poco y nada, guardo todo remotamente" },
                         { id: "B", label: "Documentos, planillas, archivos de texto u otros archivos de tamaño pequeño" },
@@ -412,7 +411,7 @@ export default function PcBuilderQuiz() {
                     </label>
                     {[
                         { id: "A", label: "Sí" },
-                        { id: "B", label: "No es necesario pero suma" },
+                        { id: "B", label: "No necesariamente pero prefiero tener la posibilidad abierta" },
                         { id: "C", label: "No" },
                     ].map((option) => (
                         <label key={option.id} className="flex items-center space-x-3 cursor-pointer">
@@ -439,6 +438,8 @@ export default function PcBuilderQuiz() {
                     {[
                         { id: "A", label: "Mediante cable ethernet" },
                         { id: "B", label: "Wi-Fi" },
+                        { id: "C", label: "Ambas" },
+                        { id: "D", label: "No estoy seguro"}
                     ].map((option) => (
                         <label key={option.id} className="flex items-center space-x-3 cursor-pointer">
                             <input
@@ -466,6 +467,7 @@ export default function PcBuilderQuiz() {
                         { id: "B", label: "Un poco" },
                         { id: "C", label: "Mucho" },
                         { id: "D", label: "Extremadamente" },
+                        { id: "E", label: "NS/NC"}
                     ].map((option) => (
                         <label key={option.id} className="flex items-center space-x-3 cursor-pointer">
                             <input
@@ -486,12 +488,13 @@ export default function PcBuilderQuiz() {
                 {/* PREGUNTA 9 */}
                 <div className="space-y-3">
                     <label className="block font-semibold text-lg">
-                        7. Sobre el RGB en la computadora:
+                        7. Sobre a la apariencia física del gabinete ¿Le gustaría que tenga luces RGB?:
                     </label>
                     {[
                         { id: "A", label: "Preferiría que no tenga" },
                         { id: "B", label: "Me da igual" },
                         { id: "C", label: "Preferiría que tenga" },
+                        { id: "D", label: "NS/NC"}
                     ].map((option) => (
                         <label key={option.id} className="flex items-center space-x-3 cursor-pointer">
                             <input
@@ -521,6 +524,7 @@ export default function PcBuilderQuiz() {
                         { id: "A", label: "No me interesa" },
                         { id: "B", label: "No es importante pero suma" },
                         { id: "C", label: "Es fundamental" },
+                        { id: "D", label: "NS/NC"}
                     ].map((option) => (
                         <label key={option.id} className="flex items-center space-x-3 cursor-pointer">
                             <input
@@ -541,7 +545,7 @@ export default function PcBuilderQuiz() {
                 {/* PREGUNTA 11 */}
                 <div className="space-y-3">
                     <label htmlFor="budget" className="block font-semibold text-lg">
-                        9. ¿Cuál es el monto máximo que está dispuesto a gastar? En ARS
+                        9. ¿Cuál es el monto máximo que está dispuesto a gastar? En pesos argentinos, sin centavos.
                     </label>
                     <div className="relative rounded-md shadow-sm max-w-xs">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">

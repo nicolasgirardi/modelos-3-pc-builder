@@ -43,9 +43,6 @@ export function answersToWeights(data: URLSearchParams): Categories {
 function cpu_general_performance(q1: string[], qa1: string | null): number {
     let weight = 1
     if  (qa1 !== null) {
-        if (qa1 === "B") {
-            weight = 3;
-        }
         if (qa1 === "C") {
             weight = 8;
         }

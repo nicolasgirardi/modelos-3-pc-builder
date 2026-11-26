@@ -75,7 +75,7 @@ function cpu_gaming_performance(q1: string[], qb1: string[]): number {
             weight = Math.max(weight, 12);
         }
         if (answer === "B") {
-            weight = Math.max(weight, 16);
+            weight = Math.max(weight, 15);
         }
         if (answer === "C") {
             weight = Math.max(weight, 6);

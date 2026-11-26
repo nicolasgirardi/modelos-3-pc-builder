@@ -341,7 +341,7 @@ function storage_capacity(q5: string | null, qb1: string[]): number {
     let weight = 1
     for (const answer of qb1) {
         if (answer === "A" || answer === "B") {
-            weight = Math.max(weight, 14);
+            weight = Math.max(weight, 12);
         }
         if (answer === "C") {
             weight = Math.max(weight, 5);

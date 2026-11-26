@@ -265,7 +265,7 @@ function ethernet(q7: string | null): number {
 function ports(q5: string | null, q1: string[]): number {
     for (const answer of q1) {
         if (answer !== "D") {
-            return 10
+            return 8
         }
     }
     if (q5 !== null) {

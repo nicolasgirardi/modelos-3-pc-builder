@@ -25,7 +25,7 @@ export function answersToWeights(data: URLSearchParams): Categories {
         vram: vram(answers.q1, answers.q2, answers.q3, answers.q4),
         rgb: rgb(answers.q9),
         noise: noise(answers.q8),
-        ports: ports(answers.q5),
+        ports: ports(answers.q5, answers.q1),
         wifi: wifi(answers.q7),
         ethernet: ethernet(answers.q7),
         nvme: nvme(answers.q6),
@@ -262,7 +262,12 @@ function ethernet(q7: string | null): number {
     return 1
 }
 
-function ports(q5: string | null): number {
+function ports(q5: string | null, q1: string[]): number {
+    for (const answer of q1) {
+        if (answer !== "D") {
+            return 10
+        }
+    }
     if (q5 !== null) {
         if (q5 === "C") {
             return 5
